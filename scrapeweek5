@@ -1,0 +1,26 @@
+import pandas as pd
+import bs4
+import requests
+data = requests.get('https://www.ryt9.com/tag/%E0%B9%82%E0%B8%A3%E0%B8%84%E0%B9%80%E0%B8%9A%E0%B8%B2%E0%B8%AB%E0%B8%A7%E0%B8%B2%E0%B8%99')
+soup = bs4.BeautifulSoup(data.text)
+i_page = 1
+title_list = []
+date_list = []
+detail_list = []
+
+while i_page <= 1:
+    data = requests.get(f'https://www.ryt9.com/tag/%E0%B9%82%E0%B8%A3%E0%B8%84%E0%B9%80%E0%B8%9A%E0%B8%B2%E0%B8%AB%E0%B8%A7%E0%B8%B2%E0%B8%99')
+    soup = bs4.BeautifulSoup(data.text)
+    for item in soup.find_all('div', class_='desc'):
+        title_list.append(item.find('a', class_= 'list-title' ).text.strip())
+        date_list.append(item.find('span', class_='date-time').text.strip())   
+        detail_list.append(item.find('span', class_='brief').text.strip())    
+
+    print('Complete page number: ',i_page)
+    i_page += 1
+    
+df = pd.DataFrame([title_list,date_list,detail_list]).transpose()
+df.columns = ['title', 'date','detail']
+
+table = df.to_dict('records')
+table
